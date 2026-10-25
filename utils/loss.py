@@ -55,7 +55,7 @@ class SigmoidBin(nn.Module):
         self.step = step
         #print(f" start = {start}, end = {end}, step = {step} ")
 
-        bins = torch.range(start, end + 0.0001, step).float() 
+        bins = torch.arange(start, end + 0.0001, step).float() 
         self.register_buffer('bins', bins) 
                
 
@@ -103,7 +103,7 @@ class SigmoidBin(nn.Module):
 
         target_bins = torch.full_like(pred_bin, self.cn, device=device)  # targets
         n = pred.shape[0] 
-        target_bins[range(n), bin_idx] = self.cp
+        target_bins[torch.arange(n, device=device), bin_idx] = self.cp
 
         loss_bin = self.BCEbins(pred_bin, target_bins) # BCE
 
