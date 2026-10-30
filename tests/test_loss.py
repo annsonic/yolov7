@@ -1,3 +1,4 @@
+import math
 import unittest
 from types import SimpleNamespace
 
@@ -59,12 +60,12 @@ class ComputeLossOTATest(unittest.TestCase):
                 loss, items = criterion(predictions, targets, images)
 
                 objectness_scale = 5.0 if loss_type is ComputeLossAuxOTA else 4.0
-                expected_objectness = torch.tensor(objectness_scale * torch.log(torch.tensor(2.0)))
+                expected_objectness = objectness_scale * math.log(2.0)
                 torch.testing.assert_close(
                     items,
-                    torch.stack((torch.tensor(0.0), expected_objectness, torch.tensor(0.0), expected_objectness)),
+                    torch.tensor((0.0, expected_objectness, 0.0, expected_objectness)),
                 )
-                torch.testing.assert_close(loss, expected_objectness)
+                torch.testing.assert_close(loss, torch.tensor([expected_objectness]))
 
     def test_positive_targets_produce_finite_loss_and_gradients(self):
         for loss_type in self.losses:
